@@ -23,7 +23,7 @@ const MandatoryExpenses = () => {
 
   return (
     <div className="max-w-lg mx-auto px-5 mb-4">
-      <div className="glass rounded-3xl p-4 sm:p-5 glow-orange">
+      <div className="glass rounded-2xl p-5 sm:p-6 glow-orange">
         {/* Başlık */}
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-lg shadow-lg">
@@ -62,7 +62,7 @@ const MandatoryExpenses = () => {
         </form>
 
         {/* Toplam */}
-        <div className="flex items-center justify-between bg-orange-500/8 rounded-xl px-4 py-3 border border-orange-500/10">
+        <div className="flex items-center justify-between bg-orange-500/8 rounded-lg px-4 py-3 border border-orange-500/10">
           <span className="text-xs sm:text-sm text-white/40">Toplam</span>
           <span className="text-lg sm:text-xl font-bold text-orange-400">
             {formatCurrency(zorunluGiderlerTotal)}

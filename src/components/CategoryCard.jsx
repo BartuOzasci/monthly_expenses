@@ -17,7 +17,7 @@ const CategoryCard = ({ categoryKey, onDetailClick, delay = "" }) => {
 
   return (
     <div
-      className={`glass rounded-3xl p-4 sm:p-5 ${cat.glow} animate-scale-in ${delay} transition-all hover:scale-[1.01]`}
+      className={`glass rounded-2xl p-5 sm:p-6 ${cat.glow} animate-scale-in ${delay} transition-all hover:scale-[1.01]`}
     >
       {/* Üst kısım */}
       <div className="flex items-start justify-between mb-4">

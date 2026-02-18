@@ -116,7 +116,7 @@ const DailySpendingLimit = () => {
   return (
     <div className="max-w-lg mx-auto px-5 mb-8">
       <div
-        className={`glass rounded-3xl p-5 shadow-2xl ${glowColor} animate-scale-in delay-4`}
+        className={`glass rounded-2xl p-5 sm:p-6 shadow-2xl ${glowColor} animate-scale-in delay-4`}
       >
         {/* Başlık satırı */}
         <div className="flex items-center justify-between mb-4">
@@ -137,7 +137,7 @@ const DailySpendingLimit = () => {
           </div>
 
           <div
-            className={`${bgAccent} ${borderAccent} border rounded-xl px-2.5 py-1.5 text-right`}
+            className={`${bgAccent} ${borderAccent} border rounded-lg px-3 py-2 text-right`}
           >
             <p className={`text-[10px] font-medium ${textAccent} opacity-70`}>
               günlük limit
@@ -199,14 +199,14 @@ const DailySpendingLimit = () => {
               {formatCurrency(Math.round(data.spendablePool))}
             </span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <div className="w-16 h-1 bg-white/5 rounded-full overflow-hidden">
               <div
                 className="h-full bg-white/20 rounded-full transition-all duration-700"
                 style={{ width: `${data.poolPct}%` }}
               />
             </div>
-            <span className="text-[10px] text-white/25 font-mono">
+            <span className="text-[11px] text-white/30 font-mono">
               {Math.round(data.poolPct)}%
             </span>
           </div>

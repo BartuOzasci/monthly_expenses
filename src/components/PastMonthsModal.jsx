@@ -41,7 +41,7 @@ const PastMonthsModal = ({ isOpen, onClose }) => {
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-md animate-fade-in"
       onClick={handleOverlay}
     >
-      <div className="w-full max-w-lg glass-strong rounded-t-[2rem] p-5 sm:p-6 animate-slide-up max-h-[85vh] overflow-y-auto safe-bottom">
+      <div className="w-full max-w-lg glass-strong rounded-t-3xl p-6 sm:p-7 animate-slide-up max-h-[85vh] overflow-y-auto safe-bottom">
         {/* Handle */}
         <div className="w-10 h-1 bg-white/15 rounded-full mx-auto mb-5" />
         <h2 className="text-base sm:text-lg font-bold text-white/90 mb-6 text-center tracking-tight">

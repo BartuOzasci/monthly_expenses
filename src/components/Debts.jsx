@@ -9,7 +9,7 @@ const Debts = () => {
 
   return (
     <div className="max-w-lg mx-auto px-5 mb-6">
-      <div className="glass rounded-3xl p-4 sm:p-5 glow-rose">
+      <div className="glass rounded-2xl p-5 sm:p-6 glow-rose">
         {/* Başlık */}
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-400 to-red-500 flex items-center justify-center text-lg shadow-lg">
@@ -24,7 +24,7 @@ const Debts = () => {
         </div>
 
         {/* Borç detay */}
-        <div className="bg-rose-500/8 rounded-2xl p-4 border border-rose-500/10">
+        <div className="bg-rose-500/8 rounded-xl p-4 border border-rose-500/10">
           <p className="text-xs sm:text-sm text-white/40 mb-1.5 font-medium">
             Buse Borç — {monthName} Ayı
           </p>
