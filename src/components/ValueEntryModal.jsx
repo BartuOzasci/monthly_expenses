@@ -81,19 +81,19 @@ const ValueEntryModal = ({ isOpen, onClose }) => {
             <label className="text-[11px] sm:text-xs text-white/40 mb-2 block font-medium uppercase tracking-wider">
               Kategori
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               {Object.entries(ALL_CATEGORIES).map(([key, cat]) => (
                 <button
                   key={key}
                   type="button"
                   onClick={() => setCategory(key)}
-                  className={`flex items-center gap-2 py-3 px-3 rounded-xl text-xs sm:text-sm font-medium transition-all btn-press ${
+                  className={`flex items-center gap-2.5 py-4 px-4 rounded-2xl text-sm sm:text-base font-medium transition-all btn-press min-h-[52px] ${
                     category === key
                       ? "bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 ring-2 ring-indigo-500/15"
                       : "glass text-white/50 hover:text-white/70 hover:bg-white/5"
                   }`}
                 >
-                  <span className="text-base">{cat.icon}</span>
+                  <span className="text-lg">{cat.icon}</span>
                   <span className="truncate">{cat.label}</span>
                 </button>
               ))}
@@ -105,11 +105,11 @@ const ValueEntryModal = ({ isOpen, onClose }) => {
             <label className="text-[11px] sm:text-xs text-white/40 mb-2 block font-medium uppercase tracking-wider">
               İşlem Türü
             </label>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setType("harcama")}
-                className={`py-3.5 rounded-xl text-sm font-semibold transition-all btn-press ${
+                className={`py-4 rounded-2xl text-base font-semibold transition-all btn-press min-h-[52px] ${
                   type === "harcama"
                     ? "bg-red-500/15 border border-red-400/30 text-red-400 ring-2 ring-red-500/15"
                     : "glass text-white/50 hover:text-white/70"
@@ -120,7 +120,7 @@ const ValueEntryModal = ({ isOpen, onClose }) => {
               <button
                 type="button"
                 onClick={() => setType("paraEkle")}
-                className={`py-3.5 rounded-xl text-sm font-semibold transition-all btn-press ${
+                className={`py-4 rounded-2xl text-base font-semibold transition-all btn-press min-h-[52px] ${
                   type === "paraEkle"
                     ? "bg-emerald-500/15 border border-emerald-400/30 text-emerald-400 ring-2 ring-emerald-500/15"
                     : "glass text-white/50 hover:text-white/70"
@@ -132,18 +132,18 @@ const ValueEntryModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Butonlar */}
-          <div className="flex gap-2.5 pt-1">
+          <div className="flex gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3.5 rounded-xl glass text-white/50 font-medium hover:bg-white/5 transition-colors btn-press"
+              className="flex-1 py-4 rounded-2xl glass text-white/50 text-base font-semibold hover:bg-white/5 transition-colors btn-press min-h-[52px]"
             >
               İptal
             </button>
             <button
               type="submit"
               disabled={!amount || !category || !type}
-              className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold disabled:opacity-20 btn-press shadow-lg shadow-indigo-500/20"
+              className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-base font-semibold disabled:opacity-20 btn-press shadow-lg shadow-indigo-500/20 min-h-[52px]"
             >
               Kaydet
             </button>

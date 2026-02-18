@@ -80,23 +80,23 @@ const DetailModal = ({ isOpen, onClose, categoryKey }) => {
                 className="glass rounded-2xl p-3.5 sm:p-4 transition-all hover:bg-white/5"
               >
                 {editingId === tx.id ? (
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <input
                       type="number"
                       value={editAmount}
                       onChange={(e) => setEditAmount(e.target.value)}
-                      className="flex-1 glass rounded-xl px-3 py-2.5 text-white/90 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                      className="flex-1 glass rounded-2xl px-4 py-3 text-white/90 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
                       autoFocus
                     />
                     <button
                       onClick={() => handleSaveEdit(tx.id)}
-                      className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-sm font-bold btn-press border border-emerald-500/20"
+                      className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-base font-bold btn-press border border-emerald-500/20"
                     >
                       ✓
                     </button>
                     <button
                       onClick={() => setEditingId(null)}
-                      className="w-10 h-10 rounded-xl glass text-white/40 flex items-center justify-center text-sm btn-press"
+                      className="w-12 h-12 rounded-2xl glass text-white/40 flex items-center justify-center text-base btn-press"
                     >
                       ✕
                     </button>
@@ -128,17 +128,17 @@ const DetailModal = ({ isOpen, onClose, categoryKey }) => {
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-1.5 ml-3">
+                    <div className="flex items-center gap-2.5 ml-3">
                       <button
                         onClick={() => handleEdit(tx)}
-                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl glass flex items-center justify-center hover:bg-white/10 transition-colors btn-press text-sm"
+                        className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl glass flex items-center justify-center hover:bg-white/10 transition-colors btn-press text-base"
                         title="Düzenle"
                       >
                         ✏️
                       </button>
                       <button
                         onClick={() => deleteTransaction(tx.id)}
-                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl glass flex items-center justify-center hover:bg-red-500/15 transition-colors btn-press text-sm"
+                        className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl glass flex items-center justify-center hover:bg-red-500/15 transition-colors btn-press text-base"
                         title="Sil"
                       >
                         🗑️
@@ -153,7 +153,7 @@ const DetailModal = ({ isOpen, onClose, categoryKey }) => {
 
         <button
           onClick={onClose}
-          className="w-full mt-5 py-3.5 rounded-xl glass text-white/50 font-medium hover:bg-white/5 transition-colors btn-press"
+          className="w-full mt-5 py-4 rounded-2xl glass text-white/50 text-base font-semibold hover:bg-white/5 transition-colors btn-press min-h-[52px]"
         >
           Kapat
         </button>
