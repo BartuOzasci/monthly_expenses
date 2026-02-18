@@ -132,20 +132,20 @@ const ValueEntryModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Butonlar */}
-          <div className="mt-6 pt-5 border-t border-white/10">
-            <div className="glass-strong rounded-2xl p-4">
-              <div className="flex gap-3">
+          <div className="mt-8 sm:mt-10 pt-6 sm:pt-7 border-t border-white/10">
+            <div className="glass-strong rounded-2xl p-3.5 sm:p-4 border border-white/8">
+              <div className="flex gap-3 sm:gap-4">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-4 rounded-2xl glass text-white/50 text-base font-semibold hover:bg-white/5 transition-colors btn-press min-h-[52px]"
+                  className="flex-1 py-3.5 sm:py-4 rounded-2xl glass text-white/50 text-sm sm:text-base font-semibold hover:bg-white/5 transition-colors btn-press min-h-[48px] sm:min-h-[52px]"
                 >
                   İptal
                 </button>
                 <button
                   type="submit"
                   disabled={!amount || !category || !type}
-                  className="flex-1 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-base font-semibold disabled:opacity-20 btn-press shadow-lg shadow-indigo-500/20 min-h-[52px]"
+                  className="flex-1 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-sm sm:text-base font-semibold disabled:opacity-20 btn-press shadow-lg shadow-indigo-500/20 min-h-[48px] sm:min-h-[52px]"
                 >
                   Kaydet
                 </button>

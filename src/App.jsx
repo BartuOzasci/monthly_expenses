@@ -26,7 +26,7 @@ const AppContent = () => {
         <BudgetInput />
 
         {/* Kategori kartları */}
-        <div className="max-w-lg mx-auto px-5 space-y-6 mb-8">
+        <div className="max-w-lg mx-auto px-4 sm:px-5 space-y-8 sm:space-y-10 mb-10 sm:mb-12">
           {["genelHarcamalar", "eglence", "yatirim"].map((key, i) => (
             <CategoryCard
               key={key}
@@ -49,8 +49,8 @@ const AppContent = () => {
       </main>
 
       {/* Footer */}
-      <footer className="text-center py-6 mt-4">
-        <p className="text-xs text-white/20 font-medium tracking-wider">
+      <footer className="text-center py-8 sm:py-10 mt-8 sm:mt-12 border-t border-white/5">
+        <p className="text-[11px] sm:text-xs text-white/25 font-medium tracking-[0.2em] uppercase">
           Bartu Özaşçı
         </p>
       </footer>
