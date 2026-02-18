@@ -7,6 +7,7 @@ import CategoryCard from "./components/CategoryCard";
 import MandatoryExpenses from "./components/MandatoryExpenses";
 import Debts from "./components/Debts";
 import ActionButtons from "./components/ActionButtons";
+import DailySpendingLimit from "./components/DailySpendingLimit";
 import ValueEntryModal from "./components/ValueEntryModal";
 import DetailModal from "./components/DetailModal";
 import PastMonthsModal from "./components/PastMonthsModal";
@@ -43,6 +44,8 @@ const AppContent = () => {
           onValueEntry={() => setShowValueEntry(true)}
           onPastMonths={() => setShowPastMonths(true)}
         />
+
+        <DailySpendingLimit />
       </main>
 
       {/* Modallar */}
