@@ -114,7 +114,7 @@ const DailySpendingLimit = () => {
       : "border-cyan-500/20";
 
   return (
-    <div className="max-w-lg mx-auto px-5 mb-8">
+    <div className="max-w-lg mx-auto px-5 mb-8 mt-2">
       <div
         className={`glass rounded-2xl p-5 sm:p-6 shadow-2xl ${glowColor} animate-scale-in delay-4`}
       >

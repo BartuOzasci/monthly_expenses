@@ -22,7 +22,7 @@ const MandatoryExpenses = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto px-5 mb-4">
+    <div className="max-w-lg mx-auto px-5 mb-8 mt-4">
       <div className="glass rounded-2xl p-5 sm:p-6 glow-orange">
         {/* Başlık */}
         <div className="flex items-center gap-3 mb-4">

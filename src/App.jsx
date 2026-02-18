@@ -18,15 +18,15 @@ const AppContent = () => {
   const [detailCategory, setDetailCategory] = useState(null);
 
   return (
-    <div className="min-h-dvh pb-6">
+    <div className="min-h-dvh pb-6 flex flex-col">
       <Navbar />
 
-      <main className="pt-2">
+      <main className="pt-2 flex-1">
         <DateDisplay />
         <BudgetInput />
 
         {/* Kategori kartları */}
-        <div className="max-w-lg mx-auto px-5 space-y-4 mb-5">
+        <div className="max-w-lg mx-auto px-5 space-y-6 mb-8">
           {["genelHarcamalar", "eglence", "yatirim"].map((key, i) => (
             <CategoryCard
               key={key}
@@ -47,6 +47,13 @@ const AppContent = () => {
 
         <DailySpendingLimit />
       </main>
+
+      {/* Footer */}
+      <footer className="text-center py-6 mt-4">
+        <p className="text-xs text-white/20 font-medium tracking-wider">
+          Bartu Özaşçı
+        </p>
+      </footer>
 
       {/* Modallar */}
       <ValueEntryModal

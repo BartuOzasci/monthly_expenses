@@ -86,7 +86,7 @@ const CategoryCard = ({ categoryKey, onDetailClick, delay = "" }) => {
       {/* Detay butonu */}
       <button
         onClick={() => onDetailClick(categoryKey)}
-        className={`w-full py-2.5 sm:py-3 rounded-xl bg-gradient-to-r ${cat.gradientBg} ${cat.text} text-xs sm:text-sm font-semibold btn-press border ${cat.border} hover:brightness-125 transition-all`}
+        className={`w-full py-3.5 sm:py-4 rounded-xl bg-gradient-to-r ${cat.gradientBg} ${cat.text} text-sm sm:text-base font-bold btn-press border ${cat.border} hover:brightness-125 transition-all tracking-wide`}
       >
         Detay Görüntüle
       </button>

@@ -8,7 +8,7 @@ const Debts = () => {
   if (budget <= 0) return null;
 
   return (
-    <div className="max-w-lg mx-auto px-5 mb-6">
+    <div className="max-w-lg mx-auto px-5 mb-8">
       <div className="glass rounded-2xl p-5 sm:p-6 glow-rose">
         {/* Başlık */}
         <div className="flex items-center gap-3 mb-4">

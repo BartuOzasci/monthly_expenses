@@ -1,6 +1,6 @@
 const ActionButtons = ({ onValueEntry, onPastMonths }) => (
-  <div className="max-w-lg mx-auto px-5 mb-10 safe-bottom">
-    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+  <div className="max-w-lg mx-auto px-5 mb-10 mt-4 safe-bottom">
+    <div className="grid grid-cols-2 gap-4 sm:gap-5">
       <button
         onClick={onValueEntry}
         className="group relative overflow-hidden py-5 sm:py-6 rounded-2xl bg-gradient-to-br from-indigo-500 via-violet-500 to-purple-600 text-white font-semibold text-sm sm:text-base btn-press shadow-xl shadow-violet-500/20"
