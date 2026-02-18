@@ -132,7 +132,7 @@ const ValueEntryModal = ({ isOpen, onClose }) => {
           </div>
 
           {/* Butonlar */}
-          <div className="mt-[5px] pt-6 sm:pt-7 border-t border-white/10">
+          <div className="mt-8 sm:mt-10 pt-6 sm:pt-7 border-t border-white/10">
             <div className="glass-strong rounded-2xl p-3.5 sm:p-4 border border-white/8">
               <div className="flex gap-3 sm:gap-4">
                 <button
