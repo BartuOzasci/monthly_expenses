@@ -26,7 +26,7 @@ export const DAYS_TR = [
 export const CATEGORIES = {
   genelHarcamalar: {
     label: "Genel Harcamalar",
-    percentage: 40,
+    percentage: 45,
     gradient: "from-sky-400 to-blue-500",
     gradientBg: "from-sky-500/20 to-blue-500/10",
     bg: "bg-sky-500/10",
@@ -38,7 +38,7 @@ export const CATEGORIES = {
   },
   eglence: {
     label: "Eğlence",
-    percentage: 25,
+    percentage: 30,
     gradient: "from-violet-400 to-purple-500",
     gradientBg: "from-violet-500/20 to-purple-500/10",
     bg: "bg-violet-500/10",
@@ -50,7 +50,7 @@ export const CATEGORIES = {
   },
   yatirim: {
     label: "Yatırım",
-    percentage: 35,
+    percentage: 25,
     gradient: "from-emerald-400 to-teal-500",
     gradientBg: "from-emerald-500/20 to-teal-500/10",
     bg: "bg-emerald-500/10",
