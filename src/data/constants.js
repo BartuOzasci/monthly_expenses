@@ -62,4 +62,13 @@ export const CATEGORIES = {
   },
 };
 
+/** Yatırım hariç, harcama yapılabilen kategoriler. */
+export const SPENDING_KEYS = ["genelHarcamalar", "eglence"];
+
+/** Sadece görsel bilgi kartı olan, veri girişi kapalı kategori. */
+export const INVESTMENT_KEY = "yatirim";
+
 export const STORAGE_KEY = "monthly_budget_data";
+
+/** Şema sürümü — eski veriyi (borç / manuel zorunlu gider) temizlemek için. */
+export const SCHEMA_VERSION = 2;
