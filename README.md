@@ -83,6 +83,33 @@ src/
 └── index.css
 ```
 
+## Veri saklama
+
+Tüm veri tarayıcının `localStorage` alanında `monthly_budget_data` anahtarında
+tutulur; sunucu veya hesap yoktur.
+
+- Ay değiştiğinde biten ay otomatik arşivlenir (son 24 ay saklanır), yeni ay
+  sıfır işlemle başlar.
+- Şema sürümlüdür (`SCHEMA_VERSION`). Eski sürümden gelen veriler açılışta
+  otomatik dönüştürülür; kaldırılan borç ve elle girilmiş zorunlu gider
+  kayıtları temizlenir.
+- Her şeyi sıfırlamak için tarayıcı konsolunda:
+
+```js
+localStorage.removeItem("monthly_budget_data");
+```
+
+## V2'de neler değişti?
+
+| Konu             | V1                                            | V2                                                                                 |
+| ---------------- | --------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Yatırım          | Diğerleriyle aynı kart, işlem girilebiliyordu | Salt görsel bilgi kartı — sadece %pay ve tutar, giriş kapalı                       |
+| Borçlar          | Ayrı bölüm ve kategori                        | Tamamen kaldırıldı                                                                 |
+| Zorunlu giderler | Uygulama içinden tek tek tutar girişi         | `src/data/fixedExpenses.js` dosyasından sabit liste, bütçeden otomatik düşülür     |
+| Günlük limit     | Kalan bakiye / kalan gün                      | Devreden bakiyeli: harcanmayan gün sonraki güne eklenir, aşımda limit düşer        |
+| Geçmiş           | Son 3 ayın kategori bakiyeleri                | O yılın ay ay artış / fazla harcama özeti ve yıl toplamı                           |
+| Kod yapısı       | Hesaplar bileşenlerin içinde tekrarlanıyordu  | Tüm hesaplar `src/data/budgetMath.js`, ortak arayüz parçaları `src/components/ui/` |
+
 ## Başlangıç
 
 ```bash
