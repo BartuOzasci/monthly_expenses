@@ -2,30 +2,22 @@ import { useState } from "react";
 import { useBudget } from "../context/BudgetContext";
 import { CATEGORIES } from "../data/constants";
 import { formatCurrency, getShortDate } from "../data/helpers";
+import BottomSheet from "./ui/BottomSheet";
 
 const DetailModal = ({ isOpen, onClose, categoryKey }) => {
-  const { transactions, editTransaction, deleteTransaction } = useBudget();
+  const { transactions, categories, editTransaction, deleteTransaction } =
+    useBudget();
   const [editingId, setEditingId] = useState(null);
   const [editAmount, setEditAmount] = useState("");
 
   if (!isOpen || !categoryKey) return null;
 
-  const cat = CATEGORIES[categoryKey] || {
-    label: categoryKey,
-    text: "text-white",
-    border: "border-white/10",
-    icon: "📌",
-    gradient: "from-gray-400 to-gray-500",
-  };
-
-  const categoryTx = transactions.filter((t) => t.category === categoryKey);
-  const relatedTx =
-    categoryKey === "genelHarcamalar"
-      ? [
-          ...categoryTx,
-          ...transactions.filter((t) => t.category === "zorunluGiderler"),
-        ]
-      : categoryTx;
+  const cat = CATEGORIES[categoryKey];
+  const data = categories[categoryKey];
+  const list = transactions
+    .filter((t) => t.category === categoryKey)
+    .slice()
+    .reverse();
 
   const handleEdit = (tx) => {
     setEditingId(tx.id);
@@ -40,126 +32,128 @@ const DetailModal = ({ isOpen, onClose, categoryKey }) => {
     setEditAmount("");
   };
 
-  const handleOverlay = (e) => {
-    if (e.target === e.currentTarget) onClose();
-  };
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-md animate-fade-in"
-      onClick={handleOverlay}
+    <BottomSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`${cat?.label ?? categoryKey} — Detay`}
+      subtitle={`${list.length} işlem`}
+      icon={cat?.icon ?? "📌"}
     >
-      <div className="w-full max-w-lg glass-strong rounded-t-3xl p-6 sm:p-7 animate-slide-up max-h-[85vh] overflow-y-auto safe-bottom">
-        {/* Handle */}
-        <div className="w-10 h-1 bg-white/15 rounded-full mx-auto mb-5" />
-
-        {/* Başlık */}
-        <div className="flex items-center justify-center gap-2.5 mb-5">
-          <div
-            className={`w-8 h-8 rounded-xl bg-gradient-to-br ${cat.gradient || "from-gray-400 to-gray-500"} flex items-center justify-center text-sm shadow-lg`}
-          >
-            {cat.icon}
-          </div>
-          <h2
-            className={`text-base sm:text-lg font-bold ${cat.text || "text-white"}`}
-          >
-            {cat.label} — Detay
-          </h2>
+      {/* Özet şeridi */}
+      {data && (
+        <div className="grid grid-cols-3 gap-2 mb-5">
+          <Summary label="Pay" value={data.base} tone="text-white/70" />
+          <Summary label="Harcanan" value={data.spent} tone="text-red-400/90" />
+          <Summary
+            label="Kalan"
+            value={data.remaining}
+            tone={data.remaining < 0 ? "text-red-400" : "text-emerald-400/90"}
+          />
         </div>
+      )}
 
-        {relatedTx.length === 0 ? (
-          <div className="text-center py-12">
-            <span className="text-3xl block mb-3 opacity-30">📭</span>
-            <p className="text-white/25 text-sm">Henüz işlem bulunmuyor</p>
-          </div>
-        ) : (
-          <div className="space-y-2.5">
-            {relatedTx.map((tx) => (
-              <div
-                key={tx.id}
-                className="glass rounded-2xl p-3.5 sm:p-4 transition-all hover:bg-white/5"
-              >
-                {editingId === tx.id ? (
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="number"
-                      value={editAmount}
-                      onChange={(e) => setEditAmount(e.target.value)}
-                      className="flex-1 glass rounded-2xl px-4 py-3 text-white/90 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
-                      autoFocus
-                    />
-                    <button
-                      onClick={() => handleSaveEdit(tx.id)}
-                      className="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-base font-bold btn-press border border-emerald-500/20"
+      {list.length === 0 ? (
+        <div className="text-center py-12">
+          <span className="text-3xl block mb-3 opacity-30">📭</span>
+          <p className="text-white/25 text-sm">Henüz işlem bulunmuyor</p>
+        </div>
+      ) : (
+        <div className="space-y-2.5">
+          {list.map((tx) => (
+            <div
+              key={tx.id}
+              className="glass rounded-2xl p-3.5 sm:p-4 transition-all hover:bg-white/5"
+            >
+              {editingId === tx.id ? (
+                <div className="flex items-center gap-2.5">
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    value={editAmount}
+                    onChange={(e) => setEditAmount(e.target.value)}
+                    className="flex-1 min-w-0 glass rounded-2xl px-4 py-3 text-white/90 text-base focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                    autoFocus
+                  />
+                  <button
+                    onClick={() => handleSaveEdit(tx.id)}
+                    aria-label="Kaydet"
+                    className="w-12 h-12 shrink-0 rounded-2xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-base font-bold btn-press border border-emerald-500/20"
+                  >
+                    ✓
+                  </button>
+                  <button
+                    onClick={() => setEditingId(null)}
+                    aria-label="Vazgeç"
+                    className="w-12 h-12 shrink-0 rounded-2xl glass text-white/40 flex items-center justify-center text-base btn-press"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <span
+                      className={`inline-block text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium mb-1.5 ${
+                        tx.type === "harcama"
+                          ? "bg-red-500/15 text-red-400"
+                          : "bg-emerald-500/15 text-emerald-400"
+                      }`}
                     >
-                      ✓
+                      {tx.type === "harcama" ? "↓ Harcama" : "↑ Para Ekle"}
+                    </span>
+                    <p className="text-base sm:text-lg font-bold text-white/90 tabular-nums">
+                      {formatCurrency(tx.amount)}
+                    </p>
+                    <p className="text-[10px] sm:text-xs text-white/25 mt-0.5 font-medium">
+                      {getShortDate(tx.date)}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => handleEdit(tx)}
+                      className="w-11 h-11 rounded-2xl glass flex items-center justify-center hover:bg-white/10 transition-colors btn-press text-base"
+                      title="Düzenle"
+                      aria-label="Düzenle"
+                    >
+                      ✏️
                     </button>
                     <button
-                      onClick={() => setEditingId(null)}
-                      className="w-12 h-12 rounded-2xl glass text-white/40 flex items-center justify-center text-base btn-press"
+                      onClick={() => deleteTransaction(tx.id)}
+                      className="w-11 h-11 rounded-2xl glass flex items-center justify-center hover:bg-red-500/15 transition-colors btn-press text-base"
+                      title="Sil"
+                      aria-label="Sil"
                     >
-                      ✕
+                      🗑️
                     </button>
                   </div>
-                ) : (
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span
-                          className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-medium ${
-                            tx.type === "harcama"
-                              ? "bg-red-500/15 text-red-400"
-                              : "bg-emerald-500/15 text-emerald-400"
-                          }`}
-                        >
-                          {tx.type === "harcama" ? "↓ Harcama" : "↑ Para Ekle"}
-                        </span>
-                        {tx.category === "zorunluGiderler" && (
-                          <span className="text-[10px] sm:text-xs text-orange-400/70 font-medium">
-                            Zorunlu
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-base sm:text-lg font-bold text-white/90">
-                        {formatCurrency(tx.amount)}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-white/25 mt-0.5 font-medium">
-                        {getShortDate(tx.date)}
-                      </p>
-                    </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
-                    <div className="flex items-center gap-2.5 ml-3">
-                      <button
-                        onClick={() => handleEdit(tx)}
-                        className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl glass flex items-center justify-center hover:bg-white/10 transition-colors btn-press text-base"
-                        title="Düzenle"
-                      >
-                        ✏️
-                      </button>
-                      <button
-                        onClick={() => deleteTransaction(tx.id)}
-                        className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl glass flex items-center justify-center hover:bg-red-500/15 transition-colors btn-press text-base"
-                        title="Sil"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        <button
-          onClick={onClose}
-          className="w-full mt-5 py-4 rounded-2xl glass text-white/50 text-base font-semibold hover:bg-white/5 transition-colors btn-press min-h-[52px]"
-        >
-          Kapat
-        </button>
-      </div>
-    </div>
+      <button
+        onClick={onClose}
+        className="w-full mt-5 py-4 rounded-2xl glass text-white/50 text-base font-semibold hover:bg-white/5 transition-colors btn-press min-h-[52px]"
+      >
+        Kapat
+      </button>
+    </BottomSheet>
   );
 };
+
+const Summary = ({ label, value, tone }) => (
+  <div className="rounded-xl bg-white/[0.02] border border-white/5 px-3 py-2.5 text-center">
+    <p className="text-[10px] text-white/25 uppercase tracking-wider">
+      {label}
+    </p>
+    <p className={`text-xs sm:text-sm font-bold font-mono mt-1 ${tone}`}>
+      {formatCurrency(value)}
+    </p>
+  </div>
+);
 
 export default DetailModal;

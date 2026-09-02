@@ -6,12 +6,24 @@ import {
   useMemo,
 } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { STORAGE_KEY, CATEGORIES, MONTHS_TR } from "../data/constants";
+import {
+  STORAGE_KEY,
+  SCHEMA_VERSION,
+  SPENDING_KEYS,
+  MONTHS_TR,
+} from "../data/constants";
+import { FIXED_EXPENSES, FIXED_EXPENSES_TOTAL } from "../data/fixedExpenses";
 import { generateId } from "../data/helpers";
+import {
+  computeCategories,
+  computeDailyLimit,
+  getDistributable,
+} from "../data/budgetMath";
 
 const BudgetContext = createContext(null);
 
 const getInitialState = () => ({
+  version: SCHEMA_VERSION,
   budget: 0,
   transactions: [],
   pastMonths: [],
@@ -19,131 +31,137 @@ const getInitialState = () => ({
   currentYear: new Date().getFullYear(),
 });
 
-export const BudgetProvider = ({ children }) => {
-  const [state, setState] = useLocalStorage(STORAGE_KEY, getInitialState());
+/** Sadece geçerli kategorilerdeki işlemleri bırak (borç / eski zorunlu gider temizliği). */
+const sanitizeTransactions = (transactions = []) =>
+  transactions.filter((t) => SPENDING_KEYS.includes(t?.category));
 
-  /* ---- Ay geçişi kontrolü ---- */
+/** Eski sürümden gelen veriyi yeni şemaya taşı. */
+const migrate = (state) => {
+  if (!state || typeof state !== "object") return getInitialState();
+  if (state.version === SCHEMA_VERSION) return state;
+
+  return {
+    ...getInitialState(),
+    ...state,
+    version: SCHEMA_VERSION,
+    transactions: sanitizeTransactions(state.transactions),
+    pastMonths: (state.pastMonths || []).map((m) => ({
+      ...m,
+      fixedTotal: m.fixedTotal ?? FIXED_EXPENSES_TOTAL,
+      transactions: sanitizeTransactions(m.transactions),
+    })),
+  };
+};
+
+export const BudgetProvider = ({ children }) => {
+  const [rawState, setState] = useLocalStorage(STORAGE_KEY, getInitialState());
+  const state = useMemo(() => migrate(rawState), [rawState]);
+
+  /* ---- Ay geçişi: biten ayı arşivle, yeni aya sıfırdan başla ---- */
   useEffect(() => {
     const now = new Date();
     const cm = now.getMonth();
     const cy = now.getFullYear();
 
-    if (state.currentMonth !== cm || state.currentYear !== cy) {
-      setState((prev) => {
-        // Borç hariç tüm işlemleri kaydet
-        const saved = prev.transactions.filter((t) => t.category !== "borc");
-        const summary = {
-          month: prev.currentMonth,
-          year: prev.currentYear,
-          monthName: MONTHS_TR[prev.currentMonth],
-          budget: prev.budget,
-          transactions: saved,
-        };
-        return {
-          ...getInitialState(),
-          currentMonth: cm,
-          currentYear: cy,
-          pastMonths: [...(prev.pastMonths || []), summary].slice(-3),
-        };
-      });
-    }
+    setState((prev) => {
+      const p = migrate(prev);
+      if (p.currentMonth === cm && p.currentYear === cy) {
+        return p === prev ? prev : p;
+      }
+
+      const summary = {
+        month: p.currentMonth,
+        year: p.currentYear,
+        monthName: MONTHS_TR[p.currentMonth],
+        budget: p.budget,
+        fixedTotal: FIXED_EXPENSES_TOTAL,
+        transactions: sanitizeTransactions(p.transactions),
+      };
+
+      return {
+        ...getInitialState(),
+        currentMonth: cm,
+        currentYear: cy,
+        // Yıllık özet için son 24 ay saklanır (görüntülemede yıla göre filtrelenir).
+        pastMonths: [...(p.pastMonths || []), summary].slice(-24),
+      };
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* ---- Aksiyonlar ---- */
   const setBudget = useCallback(
-    (amount) => setState((p) => ({ ...p, budget: parseFloat(amount) || 0 })),
+    (amount) =>
+      setState((p) => ({ ...migrate(p), budget: parseFloat(amount) || 0 })),
     [setState],
   );
 
   const addTransaction = useCallback(
     (tx) => {
+      if (!SPENDING_KEYS.includes(tx.category)) return;
       const newTx = {
         ...tx,
         id: generateId(),
         date: new Date().toISOString(),
         amount: parseFloat(tx.amount) || 0,
       };
-      setState((p) => ({ ...p, transactions: [...p.transactions, newTx] }));
+      setState((p) => {
+        const prev = migrate(p);
+        return { ...prev, transactions: [...prev.transactions, newTx] };
+      });
     },
     [setState],
   );
 
   const editTransaction = useCallback(
     (id, updates) =>
-      setState((p) => ({
-        ...p,
-        transactions: p.transactions.map((t) =>
-          t.id === id
-            ? {
-                ...t,
-                ...updates,
-                amount: parseFloat(updates.amount) || t.amount,
-              }
-            : t,
-        ),
-      })),
+      setState((p) => {
+        const prev = migrate(p);
+        return {
+          ...prev,
+          transactions: prev.transactions.map((t) =>
+            t.id === id
+              ? {
+                  ...t,
+                  ...updates,
+                  amount: parseFloat(updates.amount) || t.amount,
+                }
+              : t,
+          ),
+        };
+      }),
     [setState],
   );
 
   const deleteTransaction = useCallback(
     (id) =>
-      setState((p) => ({
-        ...p,
-        transactions: p.transactions.filter((t) => t.id !== id),
-      })),
+      setState((p) => {
+        const prev = migrate(p);
+        return {
+          ...prev,
+          transactions: prev.transactions.filter((t) => t.id !== id),
+        };
+      }),
     [setState],
   );
 
   /* ---- Hesaplamalar ---- */
-  const categories = useMemo(() => {
-    const result = {};
-    const zorunluTotal = state.transactions
-      .filter((t) => t.category === "zorunluGiderler")
-      .reduce(
-        (s, t) => (t.type === "harcama" ? s + t.amount : s - t.amount),
-        0,
-      );
-
-    Object.entries(CATEGORIES).forEach(([key, cat]) => {
-      const base = (state.budget * cat.percentage) / 100;
-      const txs = state.transactions.filter((t) => t.category === key);
-      const spent = txs
-        .filter((t) => t.type === "harcama")
-        .reduce((s, t) => s + t.amount, 0);
-      const added = txs
-        .filter((t) => t.type === "paraEkle")
-        .reduce((s, t) => s + t.amount, 0);
-      let remaining = base - spent + added;
-      if (key === "genelHarcamalar") remaining -= zorunluTotal;
-      result[key] = { base, remaining, spent, added };
-    });
-    return result;
-  }, [state.budget, state.transactions]);
-
-  const zorunluGiderlerTotal = useMemo(
+  const categories = useMemo(
     () =>
-      state.transactions
-        .filter((t) => t.category === "zorunluGiderler")
-        .reduce(
-          (s, t) => (t.type === "harcama" ? s + t.amount : s - t.amount),
-          0,
-        ),
-    [state.transactions],
+      computeCategories(state.budget, state.transactions, FIXED_EXPENSES_TOTAL),
+    [state.budget, state.transactions],
   );
 
-  const borcTotal = useMemo(
-    () =>
-      state.transactions
-        .filter((t) => t.category === "borc")
-        .reduce(
-          (s, t) => (t.type === "paraEkle" ? s + t.amount : s - t.amount),
-          0,
-        ),
-    [state.transactions],
+  const dailyLimit = useMemo(
+    () => computeDailyLimit(categories, state.transactions),
+    [categories, state.transactions],
   );
 
-  /* ---- Provider değeri ---- */
+  const distributable = useMemo(
+    () => getDistributable(state.budget, FIXED_EXPENSES_TOTAL),
+    [state.budget],
+  );
+
   const value = useMemo(
     () => ({
       budget: state.budget,
@@ -152,8 +170,10 @@ export const BudgetProvider = ({ children }) => {
       currentMonth: state.currentMonth,
       currentYear: state.currentYear,
       categories,
-      zorunluGiderlerTotal,
-      borcTotal,
+      dailyLimit,
+      distributable,
+      fixedExpenses: FIXED_EXPENSES,
+      fixedExpensesTotal: FIXED_EXPENSES_TOTAL,
       setBudget,
       addTransaction,
       editTransaction,
@@ -162,8 +182,8 @@ export const BudgetProvider = ({ children }) => {
     [
       state,
       categories,
-      zorunluGiderlerTotal,
-      borcTotal,
+      dailyLimit,
+      distributable,
       setBudget,
       addTransaction,
       editTransaction,
